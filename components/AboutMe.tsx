@@ -310,12 +310,15 @@ export default function AboutMe() {
                   Connect
                 </Button>
                 <Button 
+                  asChild
                   variant="outline"
                   className="flex items-center gap-2 transition-all duration-300 ease-in-out hover:scale-105 text-base px-8 border-2"
                   size="lg"
                 >
-                  <Mail className="w-5 h-5" />
-                  Email
+                  <a href="mailto:hemk.dev@gmail.com">
+                    <Mail className="w-5 h-5" />
+                    Email
+                  </a>
                 </Button>
               </div>
             </div>

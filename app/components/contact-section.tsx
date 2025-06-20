@@ -3,13 +3,64 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 
-export const ContactSection = () => {
-  const [isSubmitted, setIsSubmitted] = useState(false);
+type FormStatus = 'idle' | 'loading' | 'success' | 'error';
 
-  const handleSubmit = (e: React.FormEvent) => {
+export const ContactSection = () => {
+  const [formStatus, setFormStatus] = useState<FormStatus>('idle');
+  const [errorMessage, setErrorMessage] = useState<string>('');
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    message: ''
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitted(true);
-    setTimeout(() => setIsSubmitted(false), 2500);
+    setFormStatus('loading');
+    setErrorMessage('');
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: 'Failed to parse error response' }));
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      setFormStatus('success');
+      setFormData({ name: '', email: '', phone: '', message: '' });
+      
+      // Reset form status after 2.5 seconds
+      setTimeout(() => setFormStatus('idle'), 2500);
+    } catch (error) {
+      console.error('Form submission error:', error);
+      setFormStatus('error');
+      setErrorMessage(error instanceof Error ? error.message : 'Failed to send message');
+      
+      // Reset error after 5 seconds
+      setTimeout(() => {
+        setFormStatus('idle');
+        setErrorMessage('');
+      }, 5000);
+    }
   };
 
   return (
@@ -44,6 +95,9 @@ export const ContactSection = () => {
                 <label className="block text-xs font-medium text-muted-foreground mb-1 pl-1">Full Name</label>
                 <input
                   type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
                   placeholder="Enter your name"
                   required
                   className="w-full px-3 py-2 rounded-md border border-primary/15 bg-background/80 focus:ring-2 focus:ring-primary/30 focus:border-primary/40 transition-all duration-200 outline-none hover:border-primary/25 hover:rounded-lg focus:rounded-lg text-sm"
@@ -53,6 +107,9 @@ export const ContactSection = () => {
                 <label className="block text-xs font-medium text-muted-foreground mb-1 pl-1">Email Address</label>
                 <input
                   type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
                   placeholder="you@email.com"
                   required
                   className="w-full px-3 py-2 rounded-md border border-primary/15 bg-background/80 focus:ring-2 focus:ring-primary/30 focus:border-primary/40 transition-all duration-200 outline-none hover:border-primary/25 hover:rounded-lg focus:rounded-lg text-sm"
@@ -63,6 +120,9 @@ export const ContactSection = () => {
               <label className="block text-xs font-medium text-muted-foreground mb-1 pl-1">Phone Number</label>
               <input
                 type="tel"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
                 placeholder="Optional"
                 className="w-full px-3 py-2 rounded-md border border-primary/15 bg-background/80 focus:ring-2 focus:ring-primary/30 focus:border-primary/40 transition-all duration-200 outline-none hover:border-primary/25 hover:rounded-lg focus:rounded-lg text-sm"
               />
@@ -70,6 +130,9 @@ export const ContactSection = () => {
             <div>
               <label className="block text-xs font-medium text-muted-foreground mb-1 pl-1">Message</label>
               <textarea
+                name="message"
+                value={formData.message}
+                onChange={handleChange}
                 placeholder="Your message..."
                 required
                 rows={4}
@@ -80,19 +143,30 @@ export const ContactSection = () => {
               whileHover={{ scale: 1.015 }}
               whileTap={{ scale: 0.98 }}
               type="submit"
-              className="w-full bg-gradient-to-r from-primary to-primary/80 text-white font-semibold py-2.5 px-6 rounded-md hover:from-primary/90 hover:to-primary/70 transition-all duration-200 hover:rounded-lg focus:rounded-lg text-base shadow-sm"
+              disabled={formStatus === 'loading'}
+              className="w-full bg-gradient-to-r from-primary to-primary/80 text-white font-semibold py-2.5 px-6 rounded-md hover:from-primary/90 hover:to-primary/70 transition-all duration-200 hover:rounded-lg focus:rounded-lg text-base shadow-sm disabled:opacity-70 disabled:cursor-not-allowed"
             >
-              Send Message
+              {formStatus === 'loading' ? 'Sending...' : 'Send Message'}
             </motion.button>
           </form>
 
-          {isSubmitted && (
+          {formStatus === 'success' && (
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               className="mt-3 p-3 bg-primary/10 text-primary rounded-md text-sm text-center border border-primary/15 shadow-sm"
             >
               Message sent! I'll get back to you soon.
+            </motion.div>
+          )}
+
+          {formStatus === 'error' && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mt-3 p-3 bg-destructive/10 text-destructive rounded-md text-sm text-center border border-destructive/15 shadow-sm"
+            >
+              {errorMessage}
             </motion.div>
           )}
         </motion.div>

@@ -227,8 +227,8 @@ export function WorkSection() {
               className="group relative cursor-pointer"
             >
               <div className="absolute -inset-4 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              <div className="relative border border-border/40 rounded-2xl p-8 lg:p-12 bg-card/40 backdrop-blur-sm transition-all duration-500 hover:bg-card/60 hover:shadow-2xl hover:shadow-primary/5">
-                <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+              <div className="relative border border-border/40 rounded-2xl p-8 lg:p-16 bg-card/40 backdrop-blur-sm transition-all duration-500 hover:bg-card/60 hover:shadow-2xl hover:shadow-primary/5">
+                <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
                   <div className="space-y-8">
                     <div className="space-y-4">
                       <div className="flex items-center gap-3">
@@ -281,7 +281,7 @@ export function WorkSection() {
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={handleButtonClick}
-                        className="group/btn bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 hover:border-primary/30 shadow-sm hover:shadow-md transition-all duration-300 rounded-lg px-6 py-3 flex items-center text-base font-medium"
+                        className="group/btn bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 hover:border-primary/30 shadow-sm hover:shadow-md transition-all duration-300 rounded-lg px-6 py-3 flex items-center justify-center text-base font-medium w-full sm:w-auto"
                       >
                         <ExternalLink className="mr-2 h-4 w-4 transition-transform group-hover/btn:scale-110" />
                         View Live Demo
@@ -292,7 +292,7 @@ export function WorkSection() {
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={handleButtonClick}
-                          className="group/btn hover:bg-primary/5 transition-all duration-300 rounded-lg px-6 py-3 flex items-center text-base font-medium"
+                          className="group/btn hover:bg-primary/5 transition-all duration-300 rounded-lg px-6 py-3 flex items-center justify-center text-base font-medium w-full sm:w-auto"
                         >
                           <Github className="mr-2 h-4 w-4 transition-transform group-hover/btn:scale-110" />
                           Source Code
@@ -300,7 +300,6 @@ export function WorkSection() {
                       )}
                     </div>
                   </div>
-                  
                   <div className="relative group/image overflow-hidden rounded-xl aspect-video border border-border/20 bg-gradient-to-br from-primary/5 to-primary/10">
                     <div className="absolute inset-0 bg-gradient-to-br from-background/10 to-background/5 z-10" />
                     {project.previewImages.map((image, imageIndex) => (
@@ -309,7 +308,7 @@ export function WorkSection() {
                         src={image}
                         alt={`${project.title} preview ${imageIndex + 1}`}
                         fill
-                        className={`object-contain p-4 transition-all duration-700 ${
+                        className={`object-contain transition-all duration-700 ${
                           (activeImages[project.title] || 0) === imageIndex
                             ? 'opacity-100 scale-100'
                             : 'opacity-0 scale-95 absolute'

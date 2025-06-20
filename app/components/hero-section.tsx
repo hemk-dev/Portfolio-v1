@@ -119,9 +119,9 @@ export function HeroSection() {
               <span className="text-muted-foreground font-medium">Follow me:</span>
               <div className="flex space-x-4">
                 {[
-                  { icon: Github, href: '#', label: 'GitHub' },
-                  { icon: Linkedin, href: '#', label: 'LinkedIn' },
-                  { icon: Mail, href: 'mailto:hem@kamli.dev', label: 'Email' }
+                  { icon: Github, href: "https://github.com/hemk-dev", label: 'GitHub' },
+                  { icon: Linkedin, href: "https://www.linkedin.com/in/hem-kamli/", label: 'LinkedIn' },
+                  { icon: Mail, href: "mailto:hemk.dev@gmail.com", label: 'Email' }
                 ].map(({ icon: Icon, href, label }) => (
                   <Button
                     key={label}
@@ -130,7 +130,12 @@ export function HeroSection() {
                     asChild
                     className="group p-3 rounded-full glass-card-primary border-primary/20 transition-all duration-300 hover:scale-110 hover:border-primary/30 hover:bg-primary/5"
                   >
-                    <a href={href} title={label}>
+                    <a 
+                      href={href} 
+                      title={label}
+                      target={href.startsWith('http') ? "_blank" : undefined}
+                      rel={href.startsWith('http') ? "noopener noreferrer" : undefined}
+                    >
                       <Icon className="w-5 h-5 group-hover:text-primary transition-colors duration-300" />
                     </a>
                   </Button>
